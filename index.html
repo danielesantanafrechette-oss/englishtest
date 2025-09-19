@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Test for Kids</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background-color: #FFFCEB;
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #FF6F61;
+    }
+    #intro {
+      margin-bottom: 20px;
+    }
+    #startBtn {
+      background: #00C292;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #timer {
+      font-weight: bold;
+      color: #E74C3C;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>✨ English Test for Kids ✨</h1>
+  <div id="intro">
+    <p>Bem-vindo ao teste de inglês!</p>
+    <p>Quando você clicar no botão abaixo, o teste abrirá em uma nova aba e o cronômetro iniciará nesta página.</p>
+    <button id="startBtn" onclick="startTest()">⭐ Iniciar Teste ⭐</button>
+    <div id="timer">Tempo restante: 30:00</div>
+  </div>
+
+  <script>
+    function startTest() {
+      window.open("https://docs.google.com/forms/d/e/1FAIpQLSccT-nMv5FTTS1XiOjv0SMo-NLGnDF5Sbup0SApM-4XVNO2RA/viewform", '_blank');
+      document.getElementById('startBtn').style.display = 'none';
+      startTimer(30 * 60);
+    }
+
+    function startTimer(seconds) {
+      let remaining = seconds;
+      const timerDisplay = document.getElementById('timer');
+      const interval = setInterval(() => {
+        const minutes = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        timerDisplay.textContent = `Tempo restante: ${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        remaining--;
+        if (remaining < 0) {
+          clearInterval(interval);
+          timerDisplay.textContent = 'Tempo encerrado!';
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
