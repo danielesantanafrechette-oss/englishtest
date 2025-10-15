@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>English Test • Teens (Comics & Superheroes)</title>
+  <style>
+    :root{
+      /* Night comic palette */
+      --bg:#0b1020; --bg2:#111633; --panel:#141a3a; --ink:#eef2ff; --muted:#b6c2ff;
+      --primary:#ffdd33; --accent:#ff3b3b; --blue:#3aa2ff; --green:#1fe39a; --warning:#ffb02e;
+      --border:#273060; --card-shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;background:radial-gradient(1200px 600px at 70% -10%,rgba(58,162,255,.15),transparent),linear-gradient(160deg,var(--bg),var(--bg2));color:var(--ink);}
+    .container{max-width:1000px;margin:0 auto;padding:20px}
+    .card{background:linear-gradient(180deg,rgba(20,26,58,.95),rgba(20,26,58,.88));border:1px solid var(--border);border-radius:22px;box-shadow:var(--card-shadow);padding:20px;position:relative;overflow:hidden}
+    h1{margin:0 0 .5rem;text-align:center;font-weight:900;color:var(--primary);letter-spacing:.5px;text-shadow:0 4px 0 #000}
+    h2{margin:.25rem 0 .5rem;color:var(--green)}
+    p.lead{text-align:center;color:var(--muted)}
+
+    /* HUD accents */
+    .hud{position:absolute;inset:0;pointer-events:none}
+    .hud:before{content:"";position:absolute;inset:-2px;border-radius:22px;border:2px dashed rgba(255,221,51,.2)}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:rgba(58,162,255,.15);border:1px solid var(--border);color:var(--muted);font-size:.9rem}
+
+    /* Form */
+    label{display:block;margin:.6em 0 .2em}
+    input, textarea{width:100%;padding:12px 14px;border-radius:14px;background:#0d1330;border:1px solid var(--border);color:var(--ink)}
+    input::placeholder, textarea::placeholder{color:#7f8cff}
+    textarea{min-height:96px}
+
+    /* Questions */
+    .question{margin:18px 0;padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(9,14,40,.9),rgba(9,14,40,.82));border:1px solid var(--border);position:relative}
+    .q-title{font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:10px}
+    .q-title .bubble{background:var(--accent);color:#fff;padding:4px 10px;border-radius:12px;font-weight:900;box-shadow:0 2px 0 #000}
+
+    /* Toolbar & nav */
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{border:0;border-radius:14px;padding:12px 16px;background:#1b2350;color:#fff;font-weight:800;cursor:pointer;border:1px solid var(--border)}
+    .btn:hover{filter:brightness(1.06)}
+    .btn.primary{background:linear-gradient(180deg,#2b3481,#1b2350);color:var(--ink)}
+    .btn.save{background:#0d153d}
+    .btn.accent{background:linear-gradient(180deg,#ff4b4b,#d63838);border-color:#7a1111}
+    .btn.success{background:linear-gradient(180deg,#1fe39a,#1ab676);border-color:#0f6f49;color:#062b1e}
+    .btn.secondary{background:#0f1642}
+
+    .nav{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:12px;flex-wrap:wrap}
+    #timer{font-weight:900;color:var(--warning)}
+    #progress{height:10px;background:#0c1242;border:1px solid var(--border);border-radius:999px;overflow:hidden}
+    #bar{height:100%;width:10%;background:linear-gradient(90deg,var(--green),var(--blue));transition:width .25s ease}
+
+    .alert{background:#3b2a00;border:1px solid #6a4b00;color:#ffd48a;border-radius:10px;padding:10px;margin:12px 0}
+    .hidden{display:none!important}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+    /* Results */
+    .result{background:#0e163d;border:1px solid var(--border);padding:16px;border-radius:14px}
+    table{border-collapse:collapse;width:100%;margin-top:10px}
+    th,td{border:1px solid var(--border);padding:8px}
+    th{background:#0d153b;text-align:left}
+    .ok{background:#0b2f1f;border:1px solid #0f6f49;color:#c6ffe6;padding:10px;border-radius:10px;margin-bottom:10px}
+    .suggestion{background:#2a0e0e;border-left:5px solid #ff3b3b;padding:10px;margin:6px 0;border-radius:8px;color:#ffd6d6}
+
+    /* Accessibility */
+    :focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+
+    /* Mobile */
+    @media (max-width:600px){
+      .toolbar{justify-content:space-between}
+      .btn{flex:1}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- INTRO -->
+    <div class="card" id="intro" aria-labelledby="title">
+      <div class="hud"></div>
+      <h1 id="title">English Test for Teens • Comics & Superheroes 🦸‍♂️🌙</h1>
+      <p class="lead">Theme: <b>Comics Night</b> • by <b>DANNY TESTES</b></p>
+
+      <div class="badge" aria-live="polite">Level: Intermediate • Focus: Verb Tenses</div>
+      <h2>Student Info</h2>
+      <form id="introForm" onsubmit="startTest();return false;">
+        <label for="name">Name *</label>
+        <input id="name" required placeholder="Your full name" />
+        <label for="email">Email *</label>
+        <input id="email" type="email" required placeholder="you@example.com" />
+        <label for="phone">Phone *</label>
+        <input id="phone" required placeholder="(xx) xxxxx-xxxx" />
+        <label for="date">Date *</label>
+        <input id="date" type="date" required />
+        <p style="text-align:center;font-style:italic">Click <b>Start Test</b> to begin. You have <b>30 minutes</b>.</p>
+        <div style="text-align:center;margin-top:10px"><button class="btn accent" type="submit">Start Test 🚀</button></div>
+      </form>
+    </div>
+
+    <!-- EXAM -->
+    <div class="card hidden" id="exam" aria-live="polite">
+      <h2 style="text-align:center;color:var(--primary);text-shadow:0 2px 0 #000">Good Lucky 🍀</h2>
+      <div class="nav">
+        <div>Question <span id="pageNow">1</span>/10</div>
+        <div id="timer" aria-live="polite">30:00</div>
+      </div>
+      <div id="progress" aria-hidden="true"><div id="bar"></div></div>
+
+      <form id="testForm" novalidate>
+        <!-- Q1 Discursive -->
+        <section class="question" data-q="1">
+          <div class="q-title"><span class="bubble">Q1</span> Write 3–4 sentences about a hero's <b>daily routine</b> using the <b>simple present</b>. Include one frequency adverb (e.g., usually, often, always).</div>
+          <textarea id="q1" aria-label="Q1 answer"></textarea>
+        </section>
+        <!-- Q2 MCQ -->
+        <section class="question hidden" data-q="2">
+          <div class="q-title"><span class="bubble">Q2</span> Choose the correct form: "Right now, the heroes ___ across the sky."</div>
+          <label><input type="radio" name="q2" value="a"> a) fly</label>
+          <label><input type="radio" name="q2" value="b"> b) are fly</label>
+          <label><input type="radio" name="q2" value="c"> c) are flying</label>
+          <label><input type="radio" name="q2" value="d"> d) were flying</label>
+        </section>
+        <!-- Q3 Discursive -->
+        <section class="question hidden" data-q="3">
+          <div class="q-title"><span class="bubble">Q3</span> Describe <b>one thing a villain did last night</b>. Use the <b>simple past</b> and a time expression.</div>
+          <textarea id="q3" aria-label="Q3 answer"></textarea>
+        </section>
+        <!-- Q4 MCQ -->
+        <section class="question hidden" data-q="4">
+          <div class="q-title"><span class="bubble">Q4</span> Choose the best option (<b>be going to</b> for plan): "Tonight, Spider-Girl ___ patrol the rooftops."</div>
+          <label><input type="radio" name="q4" value="a"> a) is going to</label>
+          <label><input type="radio" name="q4" value="b"> b) going to</label>
+          <label><input type="radio" name="q4" value="c"> c) will to</label>
+          <label><input type="radio" name="q4" value="d"> d) is going</label>
+        </section>
+        <!-- Q5 Discursive -->
+        <section class="question hidden" data-q="5">
+          <div class="q-title"><span class="bubble">Q5</span> Write two sentences about <b>Captain Bolt</b>: (1) a habit in <b>simple present</b>; (2) an action happening now in <b>present continuous</b>.</div>
+          <textarea id="q5" aria-label="Q5 answer"></textarea>
+        </section>
+        <!-- Q6 MCQ -->
+        <section class="question hidden" data-q="6">
+          <div class="q-title"><span class="bubble">Q6</span> Choose the correct <b>simple past</b> form: "The team ___ the portal yesterday."</div>
+          <label><input type="radio" name="q6" value="a"> a) closes</label>
+          <label><input type="radio" name="q6" value="b"> b) closed</label>
+          <label><input type="radio" name="q6" value="c"> c) has closed</label>
+          <label><input type="radio" name="q6" value="d"> d) was closing</label>
+        </section>
+        <!-- Q7 MCQ -->
+        <section class="question hidden" data-q="7">
+          <div class="q-title"><span class="bubble">Q7</span> Prediction based on evidence: "Look at the dark clouds. It ___ soon."</div>
+          <label><input type="radio" name="q7" value="a"> a) will rain</label>
+          <label><input type="radio" name="q7" value="b"> b) is going to rain</label>
+          <label><input type="radio" name="q7" value="c"> c) rains</label>
+          <label><input type="radio" name="q7" value="d"> d) raining</label>
+        </section>
+        <!-- Q8 MCQ -->
+        <section class="question hidden" data-q="8">
+          <div class="q-title"><span class="bubble">Q8</span> Timetables: "The Hero Express ___ at 7:30 every morning."</div>
+          <label><input type="radio" name="q8" value="a"> a) is leaving</label>
+          <label><input type="radio" name="q8" value="b"> b) leaves</label>
+          <label><input type="radio" name="q8" value="c"> c) leave</label>
+          <label><input type="radio" name="q8" value="d"> d) will leaves</label>
+        </section>
+        <!-- Q9 MCQ -->
+        <section class="question hidden" data-q="9">
+          <div class="q-title"><span class="bubble">Q9</span> Past action in progress interrupted by another past action: "I ___ when the alarm ___."</div>
+          <label><input type="radio" name="q9" value="a"> a) trained / rings</label>
+          <label><input type="radio" name="q9" value="b"> b) was training / rang</label>
+          <label><input type="radio" name="q9" value="c"> c) train / was ringing</label>
+          <label><input type="radio" name="q9" value="d"> d) was training / was ringing</label>
+        </section>
+        <!-- Q10 Discursive -->
+        <section class="question hidden" data-q="10">
+          <div class="q-title"><span class="bubble">Q10</span> Write a short message to your team about a <b>future mission</b>. Use <b>will</b> and <b>be going to</b>, and include one time marker (e.g., tomorrow, next week).</div>
+          <textarea id="q10" aria-label="Q10 answer"></textarea>
+        </section>
+      </form>
+
+      <!-- NAV & ACTIONS (side by side) -->
+      <div class="nav">
+        <button class="btn secondary" id="prevBtn" onclick="prevPage()">◀ Previous</button>
+        <div class="toolbar">
+          <button class="btn save" onclick="saveAnswers()">💾 Save</button>
+          <button class="btn success" onclick="sendToDanny()">📩 Send to Danny</button>
+          <button class="btn" onclick="downloadCSV()">⬇ Download CSV</button>
+          <button class="btn primary" id="nextBtn" onclick="nextPage()">Next ▶</button>
+        </div>
+      </div>
+
+      <div class="alert hidden" id="fiveMinWarn">⏰ Less than 5 minutes remaining. Please review your answers.</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="card hidden" id="resultsCard">
+      <h1 style="text-align:center;color:var(--primary);text-shadow:0 4px 0 #000">🎉 Congratulations! 🎉</h1>
+      <h2>Results</h2>
+      <div class="result" id="resultsBox"></div>
+      <details style="margin-top:10px">
+        <summary><b>Rubrica (Discursivas)</b></summary>
+        <table style="margin-top:8px">
+          <tr><th>Critério</th><th>Descrição</th><th>Pontuação</th></tr>
+          <tr><td>✅ Correto</td><td>Atende ao tempo verbal solicitado com vocabulário adequado e coerência.</td><td><b>1.0</b></td></tr>
+          <tr><td>⚠️ Parcial</td><td>Ideia geral correta, mas com deslizes (tempo verbal misto, erro de concordância ou faltou elemento pedido).</td><td><b>0.5</b></td></tr>
+          <tr><td>❌ Incorreto</td><td>Resposta fora do tema, vazia, ou sem o tempo verbal requisitado.</td><td><b>0.0</b></td></tr>
+        </table>
+      </details>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    const ANSWER_KEY = { q2:"c", q4:"a", q6:"b", q7:"b", q8:"b", q9:"b" };
+    const SHEETDB_ENDPOINT = 'https://sheetdb.io/api/v1/qfdaxi4ivyjam'; // 🔁 altere se necessário
+
+    // ====== STATE ======
+    let page = 1; let timerInterval; let timeLeft = 30*60; // 30 min
+
+    // ====== HELPERS ======
+    const qs = sel => document.querySelector(sel);
+    const qsa = sel => Array.from(document.querySelectorAll(sel));
+    const show = el => el.classList.remove('hidden');
+    const hide = el => el.classList.add('hidden');
+
+    // ====== START / TIMER ======
+    function startTest(){
+      if(!document.getElementById('introForm').reportValidity()) return;
+      qs('#date').value ||= new Date().toISOString().slice(0,10);
+      hide(qs('#intro')); show(qs('#exam')); showPage(1); startTimer();
+    }
+    function startTimer(){ updateTimerText();
+      timerInterval = setInterval(()=>{
+        timeLeft--; if(timeLeft<=300){qs('#fiveMinWarn').classList.remove('hidden')}
+        if(timeLeft<=0){clearInterval(timerInterval); computeAndShowResults();}
+        updateTimerText();
+      },1000);
+    }
+    function updateTimerText(){ const m=Math.floor(timeLeft/60), s=String(timeLeft%60).padStart(2,'0'); qs('#timer').textContent=`${m}:${s}` }
+
+    // ====== PAGING ======
+    function showPage(n){
+      page = Math.max(1, Math.min(10, n));
+      qsa('[data-q]').forEach(sec => sec.classList.toggle('hidden', Number(sec.dataset.q)!==page));
+      qs('#pageNow').textContent = String(page);
+      qs('#prevBtn').disabled = page===1;
+      qs('#nextBtn').textContent = page===10 ? 'Finish ▶' : 'Next ▶';
+      const pct = (page/10)*100; qs('#bar').style.width = pct+'%';
+    }
+    function nextPage(){ if(page<10){ showPage(page+1) } else { computeAndShowResults() } }
+    function prevPage(){ if(page>1){ showPage(page-1) } }
+
+    // ====== PERSISTENCE ======
+    qsa('input, textarea').forEach(el=> el.addEventListener('change', debounce(saveAnswers,300)));
+    function saveAnswers(){ localStorage.setItem('danny_test_teens_comics', JSON.stringify(getPayload())); alert('Respostas salvas localmente.'); }
+
+    // ====== RUBRIC & SCORING ======
+    function rubricEval(text, req){
+      const t=(text||'').trim(); if(!t) return {score:0,comment:'❌ Incorreto',suggest:req.example};
+      const okMust = (req.must||[]).every(m=> new RegExp(m,'i').test(t));
+      const okLen = (t.split(/\s+/).length >= (req.minWords||3));
+      if(okMust && okLen) return {score:1.0,comment:'✅ Correto',suggest:null};
+      return {score:0.5,comment:'⚠️ Parcial',suggest:req.example};
+    }
+    function computeScore(d){
+      let s=0; Object.keys(ANSWER_KEY).forEach(k=>{ if(d[k]===ANSWER_KEY[k]) s+=1 });
+      s += rubricEval(d.q1,{must:['(always|usually|often)'],minWords:3,example:'He usually trains at dawn. He always helps citizens. He often checks the city cameras.'}).score;
+      s += rubricEval(d.q3,{must:['(yesterday|last|at\\s+night)'],minWords:1,example:'Last night, the villain stole the energy core.'}).score;
+      s += rubricEval(d.q5,{must:['(simple\\s*present|)'],minWords:2,example:'He trains every day. Now he is testing a new suit.'}).score; // guidance only
+      s += rubricEval(d.q10,{must:['(will|going\s*to)'],minWords:2,example:'Tomorrow we will meet at HQ. We are going to review the plan.'}).score;
+      return Number(s.toFixed(1));
+    }
+
+    // ====== RESULTS ======
+    function computeAndShowResults(){ const d=getPayload(); d.final_score = computeScore(d); showResults(d); }
+    function showResults(d){
+      hide(qs('#exam')); show(qs('#resultsCard'));
+      const map = { q2:'are flying', q4:'is going to', q6:'closed', q7:'is going to rain', q8:'leaves', q9:'was training / rang' };
+      let mcq = '<ul>';
+      Object.keys(ANSWER_KEY).forEach(qid=>{
+        const given = d[qid];
+        const sticker = given===ANSWER_KEY[qid] ? '✅' : '❌';
+        mcq += `<li>${qid.toUpperCase()}: <b>${map[qid]}</b> ${sticker}</li>`;
+      });
+      mcq += '</ul>';
+
+      const discReq = {
+        q1:{example:'He usually trains at dawn. He always helps citizens. He often checks the city cameras.'},
+        q3:{example:'Last night, the villain stole the energy core.'},
+        q5:{example:'He trains every day. Now he is testing a new suit.'},
+        q10:{example:'Tomorrow we will meet at HQ. We are going to review the plan.'}
+      };
+      let disc = '';
+      ['q1','q3','q5','q10'].forEach(qid=>{
+        const r = rubricEval(d[qid], {must:[],minWords:2,example:discReq[qid].example});
+        const needSuggest = r.score < 1.0 && r.suggest;
+        disc += `<div><b>${qid.toUpperCase()}</b>: ${r.comment}${needSuggest?`<div class='suggestion'>Sugestão: <em>${escapeHtml(r.suggest)}</em></div>`:''}</div>`;
+      });
+
+      qs('#resultsBox').innerHTML = `
+        <p class="ok"><b>Nota Final:</b> ${d.final_score}/10</p>
+        <h3>Gabarito (Objetivas)</h3>${mcq}
+        <h3>Feedback (Discursivas)</h3>${disc}
+        <h3>Envio do Aluno</h3>
+        <table>
+          <tr><th>Field</th><th>Value</th></tr>
+          ${Object.entries(d).map(([k,v])=>`<tr><td>${k}</td><td>${escapeHtml(String(v??''))}</td></tr>`).join('')}
+        </table>`;
+    }
+
+    // ====== SEND ======
+    function sendToDanny(){
+      const payload = getPayload();
+      payload.final_score = computeScore(payload);
+      fetch(SHEETDB_ENDPOINT,{
+        method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ data: payload })
+      }).finally(()=>{ showResults(payload); }); // mostra gabarito mesmo se offline
+    }
+
+    // ====== DATA ======
+    function getPayload(){
+      const get = id => (qs('#'+id)?.value||'').trim();
+      const getMC = name => (qs(`input[name="${name}"]:checked`)?.value||'');
+      return {
+        name:get('name'), email:get('email'), phone:get('phone'), date:get('date'),
+        q1:get('q1'), q2:getMC('q2'), q3:get('q3'), q4:getMC('q4'), q5:get('q5'), q6:getMC('q6'), q7:getMC('q7'), q8:getMC('q8'), q9:getMC('q9'), q10:get('q10')
+      };
+    }
+
+    function downloadCSV(){
+      const d = getPayload(); d.final_score = computeScore(d);
+      const headers = ['name','email','phone','date','q1','q2','q3','q4','q5','q6','q7','q8','q9','q10','final_score'];
+      const csv = headers.join(',')+"\n"+headers.map(h=>csvEscape(d[h]??'')).join(',');
+      const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'results.csv'; a.click(); URL.revokeObjectURL(a.href);
+    }
+
+    // ====== UTILS ======
+    function csvEscape(v){ const s=String(v).replaceAll('"','""'); return /[",\n]/.test(s)? '"'+s+'"' : s }
+    function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn.apply(this,a),ms) } }
+    function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c])) }
+  </script>
+</body>
+</html>
